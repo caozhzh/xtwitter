@@ -1,3 +1,14 @@
+<?
+mysql_connect("localhost","xtwitter","xtwitter");
+mysql_select_db("xtwitter");
+
+$msg = $_REQUEST['message'];
+mysql_query("INSERT INTO messages (shout_at,content,user_id) VALUES(now(),'$msg',1);");
+
+$result=mysql_query("SELECT * FROM messages order by shout_at desc");
+$i=0;
+?>
+
 <html>
 <head>
 <title>杏坛推特</title>
@@ -15,15 +26,18 @@
 <br/><br/><br/><br/><br/><br/><br/>
 <div id="main_left">
 <form>
-<input type="textarea" id="message">
+<textarea id="message" name="message"></textarea>
 <input type="submit" value="推特">
 </p>
 </form>
 <ul>
-<li>1小时前<br/>hello,world!</li>
-<li>3小时前<br/>hello,world!</li>
-<li>4小时前<br/>hello,world!</li>
-<li>5小时前<br/>hello,world!</li>
+<?
+while( $row=mysql_fetch_array($result) ){
+?>
+<li><?= $row['shout_at'] ?><br/><?= $row['content'] ?></li>
+<?
+}
+?>
 </ul>
 </div>
 <div id="main_right" style="float:right">

@@ -1,7 +1,14 @@
+p {
+}
+
 #logo {
 	float:left;
 }
 
 #content {
 	clear:both;
+}
+
+.mine {
+	color: blue;
 }
