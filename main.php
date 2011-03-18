@@ -3,7 +3,12 @@ mysql_connect("localhost","xtwitter","xtwitter");
 mysql_select_db("xtwitter");
 
 $msg = $_REQUEST['message'];
-mysql_query("INSERT INTO messages (shout_at,content,user_id) VALUES(now(),'$msg',1);");
+if($msg != "")
+	mysql_query("INSERT INTO messages (shout_at,content,user_id) VALUES(now(),'$msg',1);");
+
+$tid = $_REQUEST['tid'];
+if($tid != "")
+	mysql_query("DELETE from messages where id=$tid;");
 
 $result=mysql_query("SELECT * FROM messages order by shout_at desc");
 $i=0;
@@ -12,6 +17,12 @@ $i=0;
 <html>
 <head>
 <title>杏坛推特</title>
+<script language="javascript">
+function del(id) {
+	f_twitter.tid.value = id;
+	f_twitter.submit();
+}
+</script>
 </head>
 <body>
 <div id="header" style="float:left">
@@ -25,16 +36,17 @@ $i=0;
 <div id="content">
 <br/><br/><br/><br/><br/><br/><br/>
 <div id="main_left">
-<form>
+<form id="f_twitter" action="main.php">
 <textarea id="message" name="message"></textarea>
 <input type="submit" value="推特">
+<input type="hidden" id="tid" name="tid">
 </p>
 </form>
 <ul>
 <?
 while( $row=mysql_fetch_array($result) ){
 ?>
-<li><?= $row['shout_at'] ?><br/><?= $row['content'] ?></li>
+<li><?= $row['shout_at'] ?><a href="javascript:del('<?= $row['id'] ?>');">删除</a><br/><?= $row['content'] ?></li>
 <?
 }
 ?>
