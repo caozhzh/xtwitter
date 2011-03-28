@@ -1,6 +1,13 @@
 <?
+error_reporting (E_ALL & ~E_NOTICE);
+
 mysql_connect("localhost","xtwitter","xtwitter");
 mysql_select_db("xtwitter");
+
+$reply = $_REQUEST['reply'];
+$pid = $_REQUEST['pid'];
+if($reply != "")
+	mysql_query("INSERT INTO messages (shout_at,content,user_id,parent_id) VALUES(now(),'$reply',1,$pid);");
 
 $msg = $_REQUEST['message'];
 if($msg != "")
@@ -10,7 +17,7 @@ $tid = $_REQUEST['tid'];
 if($tid != "")
 	mysql_query("DELETE from messages where id=$tid;");
 
-$result=mysql_query("SELECT * FROM messages order by shout_at desc");
+$result=mysql_query("SELECT * FROM messages where parent_id=0 order by shout_at desc");
 $i=0;
 ?>
 
@@ -21,6 +28,24 @@ $i=0;
 function del(id) {
 	f_twitter.tid.value = id;
 	f_twitter.submit();
+}
+
+function checkit() {
+	msg = document.getElementById('message').value;
+	if(msg == '')
+		return false;
+}
+
+function showReply(tid) {
+	tid = 'f_twitter_reply_' + tid;
+	obj = document.getElementById(tid);
+	obj.style.visibility = 'visible';
+}
+
+function hideReply(tid) {
+	tid = 'f_twitter_reply_' + tid;
+	obj = document.getElementById(tid);
+	obj.style.visibility = 'hidden';
 }
 </script>
 </head>
@@ -36,7 +61,7 @@ function del(id) {
 <div id="content">
 <br/><br/><br/><br/><br/><br/><br/>
 <div id="main_left">
-<form id="f_twitter" action="main.php">
+<form id="f_twitter" action="main.php" onsubmit="javascript:return checkit();">
 <textarea id="message" name="message"></textarea>
 <input type="submit" value="ÍÆÌØ">
 <input type="hidden" id="tid" name="tid">
@@ -45,8 +70,26 @@ function del(id) {
 <ul>
 <?
 while( $row=mysql_fetch_array($result) ){
+	$result_child=mysql_query("SELECT * FROM messages where parent_id=".$row['id']." order by shout_at desc");
 ?>
-<li><?= $row['shout_at'] ?><a href="javascript:del('<?= $row['id'] ?>');">É¾³ý</a><br/><?= $row['content'] ?></li>
+<li onmouseover="javascript:showReply(<?= $row['id'] ?>);" onmouseout="javascript:hideReply(<?= $row['id'] ?>);"><?= $row['shout_at'] ?><a href="javascript:del('<?= $row['id'] ?>');">É¾³ý</a><br/><?= $row['content'] ?>
+<form id="f_twitter_reply_<?= $row['id'] ?>" action="main.php" style="visibility:hidden;">
+<label>»Ø¸´£º</label>
+<input type="text" value="" name="reply">
+<input type="submit" value="»Ø¸´">
+<input type="hidden" id="pid" name="pid" value="<?= $row['id'] ?>">
+</form>
+
+<ul>
+<?
+	while( $row_child=mysql_fetch_array($result_child) ){
+?>
+<li><?= $row_child['shout_at'] ?><a href="javascript:del('<?= $row_child['id'] ?>');">É¾³ý</a><br/><?= $row_child['content'] ?></li>
+<?
+	}
+?>
+</ul>
+</li>
 <?
 }
 ?>
