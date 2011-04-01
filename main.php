@@ -24,7 +24,14 @@ $i=0;
 <html>
 <head>
 <title>杏坛推特</title>
+<script src="javascript/jquery-1.5.2.min.js"></script>
+<script src="javascript/custom.js"></script>
 <script language="javascript">
+$(function(){
+	$('#btn1').click(loadXMLDoc);
+	$('#btn2').click(loadXMLDoc2);
+});
+
 function del(id) {
 	f_twitter.tid.value = id;
 	f_twitter.submit();
@@ -47,6 +54,22 @@ function hideReply(tid) {
 	obj = document.getElementById(tid);
 	obj.style.visibility = 'hidden';
 }
+
+function loadXMLDoc()
+{
+$.ajax({
+   url: "ajax_info.txt",
+   success: function(msg){
+     $('#myDiv')[0].innerHTML = msg;
+   }
+ });
+}
+function loadXMLDoc2()
+{
+$('#myDiv').fadeToggle('slow', function() {
+    // Animation complete.
+  });
+}
 </script>
 </head>
 <body>
@@ -60,8 +83,19 @@ function hideReply(tid) {
 </div>
 <div id="content">
 <br/><br/><br/><br/><br/><br/><br/>
+<button type="button" id='btn1'>Change Content</button>
+<button type="button" id='btn2'>Change Content</button>
+<div id="myDiv"></div><br/>
+<div class="jquery_demo">
+this is jquery demo!.
+</div>
+<br/><br/><br/><br/>
+<div class="jquery_demo">
+this is jquery demo2222!.
+</div>
+
 <div id="main_left">
-<form id="f_twitter" action="main.php" onsubmit="javascript:return checkit();">
+<form method="post" id="f_twitter" action="main.php" onsubmit="javascript:return checkit();">
 <textarea id="message" name="message"></textarea>
 <input type="submit" value="推特">
 <input type="hidden" id="tid" name="tid">
