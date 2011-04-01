@@ -26,51 +26,7 @@ $i=0;
 <title>–”Ã≥Õ∆Ãÿ</title>
 <script src="javascript/jquery-1.5.2.min.js"></script>
 <script src="javascript/custom.js"></script>
-<script language="javascript">
-$(function(){
-	$('#btn1').click(loadXMLDoc);
-	$('#btn2').click(loadXMLDoc2);
-});
 
-function del(id) {
-	f_twitter.tid.value = id;
-	f_twitter.submit();
-}
-
-function checkit() {
-	msg = document.getElementById('message').value;
-	if(msg == '')
-		return false;
-}
-
-function showReply(tid) {
-	tid = 'f_twitter_reply_' + tid;
-	obj = document.getElementById(tid);
-	obj.style.visibility = 'visible';
-}
-
-function hideReply(tid) {
-	tid = 'f_twitter_reply_' + tid;
-	obj = document.getElementById(tid);
-	obj.style.visibility = 'hidden';
-}
-
-function loadXMLDoc()
-{
-$.ajax({
-   url: "ajax_info.txt",
-   success: function(msg){
-     $('#myDiv')[0].innerHTML = msg;
-   }
- });
-}
-function loadXMLDoc2()
-{
-$('#myDiv').fadeToggle('slow', function() {
-    // Animation complete.
-  });
-}
-</script>
 </head>
 <body>
 <div id="header" style="float:left">
